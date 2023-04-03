@@ -1,46 +1,55 @@
 package com.jeremy.a160420020_week4.view
 
+import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.navigation.Navigation
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.jeremy.a160420020_week4.R
 import com.jeremy.a160420020_week4.model.DetailStudent
-import com.jeremy.a160420020_week4.model.Student
+import com.jeremy.a160420020_week4.viewmodel.DetailViewModel
+import com.jeremy.a160420020_week4.viewmodel.ListViewModel
+import com.squareup.picasso.Picasso
 
-class StudentDetailFragment(val studentDetailList: ArrayList<DetailStudent>):
-    RecyclerView.Adapter<StudentDetailFragment.StudentViewHolder>() {
-    class StudentViewHolder(var view: View): RecyclerView.ViewHolder(view)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.student_list_item, parent, false)
-        return StudentViewHolder(view)
+class StudentDetailFragment : Fragment() {
+    private lateinit var  detailViewModel: DetailViewModel
+    private val studentListAdapter = StudentListAdapter(arrayListOf())
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_student_detail, container, false)
     }
 
-    override fun getItemCount(): Int {
-        return studentDetailList.size
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        detailViewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        detailViewModel.fetch()
+
+        observeDetailViewModel()
     }
 
-    override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-        holder.view.findViewById<EditText>(R.id.txtId).setText(studentDetailList[position].id)
-        holder.view.findViewById<EditText>(R.id.txtName).setText(studentDetailList[position].name)
-        holder.view.findViewById<EditText>(R.id.txtBOD).setText(studentDetailList[position].BOD)
-        holder.view.findViewById<EditText>(R.id.txtPhone).setText( studentDetailList[position].phone)
-        holder.view.findViewById<Button>(R.id.btnUpdate).setOnClickListener {
+    fun observeDetailViewModel()
+    {
+        val imgUrl = view?.findViewById<ImageView>(R.id.imgFoto)
+        val id = view?.findViewById<EditText>(R.id.txtId)
+        val name = view?.findViewById<EditText>(R.id.txtName)
+        val bod = view?.findViewById<EditText>(R.id.txtBOD)
+        val phone = view?.findViewById<EditText>(R.id.txtPhone)
+        detailViewModel.studentLD.observe(viewLifecycleOwner, Observer {
+            Picasso.get().load(it.imgUrl)
+            id?.setText(it.id)
+            name?.setText(it.name)
+            bod?.setText(it.BOD)
+            phone?.setText(it.phone)
 
-        }
-    }
-
-    fun updateStudentDetailList(newStudentList:ArrayList<DetailStudent>) {
-        studentDetailList.clear()
-        studentDetailList.addAll(newStudentList)
-        notifyDataSetChanged()
+        })
     }
 
 }

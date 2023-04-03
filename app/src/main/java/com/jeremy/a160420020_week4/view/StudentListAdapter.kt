@@ -5,14 +5,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.jeremy.a160420020_week4.R
+import com.jeremy.a160420020_week4.model.DetailStudent
 import com.jeremy.a160420020_week4.model.Student
+import com.jeremy.a160420020_week4.viewmodel.DetailViewModel
 
 class StudentListAdapter(val studentList: ArrayList<Student>):
     RecyclerView.Adapter<StudentListAdapter.StudentViewHolder>() {
     class StudentViewHolder(var view: View): RecyclerView.ViewHolder(view)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
